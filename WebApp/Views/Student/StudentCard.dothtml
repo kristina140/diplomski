@@ -1,0 +1,100 @@
+﻿@viewModel WebApp.ViewModels.Student.StudentCardViewModel, WebApp
+@masterPage Views/MasterPage.dotmaster
+
+<dot:Content ContentPlaceHolderID="MainContent">
+    <div class="page-center">
+        <div class="page-grid-top">
+            <h1 class="title">Studentska kartica </h1>
+        </div>
+
+        <div class="btn-title-container" style="float:right">
+            <dot:RouteLink RouteName="Basics_Students" Text="Povratak na listu studenata"></dot:RouteLink>
+            <%--<dot:Button Text="Povratak na listu studenata"
+                        Validation.Enabled="false"
+                        class="page-button btn-add btn-long" />--%>
+        </div>
+
+        <dot:Repeater DataSource="{value: ValidationErrors}" class="error-text">
+            <ItemTemplate>
+                {{value: _this}}<br />
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <div IncludeInPage="{value: ValidId}">
+            <div>
+                <hr />
+                <h4 class="title">Osnovni podaci: </h4>
+                <table class="create-table sub-title-table" DataContext="{value: _root.StudentCard.Student}">
+                    <thead>
+                        <tr>
+                            <td>Index: </td>
+                            <td>JMBAG: </td>
+                            <td>Ime: </td>
+                            <td>Prezime: </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <dot:Literal Text="{value: IndexNmb}"></dot:Literal>
+                            </td>
+                            <td>
+                                <dot:Literal Text="{value: Jmbag}"></dot:Literal>
+                            </td>
+                            <td>
+                                <dot:Literal Text="{value: Firstname}"></dot:Literal>
+                            </td>
+                            <td>
+                                <dot:Literal Text="{value: Lastname}"></dot:Literal>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
+
+                <div class="btn-title-container" style="float:right">
+                    <dot:Button Text="{value: _root.ShowDescriptions ? "Sakrij tekst" : "Prikaži text"}"
+                                Validation.Enabled="false"
+                                Click="{staticCommand: _root.ShowDescriptions = !_root.ShowDescriptions}"
+                                class="page-button btn-add btn-long" />
+                </div>
+
+                <h4 class="title">Izlasci: </h4>
+                <br />
+                <dot:Repeater DataSource="{value: _root.StudentCard.CourseEnrolments}">
+                    <ItemTemplate>
+                        <hr />
+                        <h4 class="title">{{value: Course.Name}} </h4>
+                        <hr />
+                        <dot:Repeater DataSource="{value: Enrolments}">
+                            <h5 class="title">{{value: Semester.UserFriendly}}</h5>
+
+                            <dot:Literal Text="Konačna ocjena i datum: " class="sub-title"></dot:Literal>
+                            <dot:Literal Text="{value: FinalGrade}"></dot:Literal>
+                            <dot:Literal Text="{value: FinalGradeDate}" FormatString="dd.MM.yyyy" />
+
+                            <dot:GridView DataSource="{value: StudentExams}" class="page-grid">
+                                <Columns>
+                                    <dot:GridViewTextColumn ValueBinding="{value: ExamDate}" HeaderText="Datum ispita" IsEditable="false" FormatString="dd.MM.yyyy" />
+                                    <dot:GridViewTextColumn ValueBinding="{value: ExamType}" HeaderText="Tip ispita" IsEditable="false" />
+
+                                    <dot:GridViewTextColumn ValueBinding="{value: Participated ? "pristupio" : "nije pristupio"}" HeaderText="Pristupio" IsEditable="false" />
+                                    <dot:GridViewTextColumn ValueBinding="{value: Score}" HeaderText="Bodovi" IsEditable="false" />
+                                    <dot:GridViewTextColumn ValueBinding="{value: Grade}" HeaderText="Ocjena" IsEditable="false" />
+
+                                    <dot:GridViewTemplateColumn IsEditable="false" HeaderText="Text" Visible="{value: _root.ShowDescriptions}">
+                                        <ContentTemplate>
+                                            <dot:TextBox Text="{value: Description}" Type="MultiLine" readonly></dot:TextBox>
+                                        </ContentTemplate>
+                                    </dot:GridViewTemplateColumn>
+                                </Columns>
+                            </dot:GridView>
+                        </dot:Repeater>
+                    </ItemTemplate>
+                </dot:Repeater>
+            </div>
+        </div>
+    </div>
+
+</dot:Content>
+

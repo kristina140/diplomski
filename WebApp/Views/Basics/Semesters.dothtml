@@ -1,0 +1,245 @@
+﻿@viewModel WebApp.ViewModels.Basics.SemestersViewModel, WebApp
+@masterPage Views/MasterPage.dotmaster
+@import WebApp.Resources
+@import WebApp.Services
+@service _utility = WebApp.Services.UtilityService
+
+
+<dot:Content ContentPlaceHolderID="MainContent">
+
+    <div class="page-center">
+
+        <div class="page-grid-top">
+            <div class="semester-image"></div>
+            <h1>Semestri</h1>
+
+            <div class="btn-container">
+                <dot:Button Text="Dodaj semestar" Click="{command: AddSemester()}" class="page-button btn-add btn-long" />
+            </div>
+
+        </div>
+        <dot:Repeater DataSource="{value: ValidationErrors}" class="error-text">
+            <ItemTemplate>
+                {{value: _this}}<br />
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <dot:GridView DataSource="{value: Semesters}" class="page-grid" InlineEditing="true">
+            <Columns>
+                <dot:GridViewTemplateColumn HeaderText="Datum početka">
+                    <ContentTemplate>
+                        <dot:Literal Text="{value: StartDate}" FormatString="dd.MM.yyyy" />
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <div Validator.Value="{value: StartDate}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            <dot:TextBox Text="{value: StartDate}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Date"
+                                         pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}"
+                                         Changed="{command: _parent.UpdateSemester(_this)}"
+                                         <%--Changed="{staticCommand: _this = _utility.GetSemesterUpdates(_this)}"--%> />
+                        </div>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+                <dot:GridViewTemplateColumn HeaderText="Datum završetka">
+                    <ContentTemplate>
+                        <dot:Literal Text="{value: EndDate}" FormatString="dd.MM.yyyy" />
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <div Validator.Value="{value: EndDate}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            <dot:TextBox Text="{value: EndDate}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Date"
+                                         pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}" />
+                        </div>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+
+                <%--staticCommand: _this.AcademicYear = _utility.GetAcademicYear(_this)--%>
+                <%--<dot:GridViewTemplateColumn HeaderText="Semestar">
+                    <ContentTemplate>
+                        <dot:Literal Text="{value: IsWinter ? "Zimski" : "Ljetni"}" HeaderText="Semestar" />
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <%--<dot:TextBox Text="{value: IsWinter}"></dot:TextBox>--%>
+                        <dot:Button Text="Zimski"
+                                    Class-selected="{value: IsWinter}"
+                                    Class-not-selected="{value: !IsWinter}"
+                                    Click="{staticCommand: IsWinter = !IsWinter}"></dot:Button>
+                        <dot:Button Text="Ljetni"
+                                    Class-selected="{value: !IsWinter}"
+                                    Class-not-selected="{value: IsWinter}"
+                                    Click="{staticCommand: IsWinter = !IsWinter}"></dot:Button>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>--%>
+
+                <dot:GridViewTextColumn ValueBinding="{value: IsWinter ? "Zimski" : "Ljetni"}"
+                                        HeaderText="Semestar"
+                                        IsEditable="false" />
+
+                <dot:GridViewTextColumn ValueBinding="{value: AcademicYear}" HeaderText="Academska godina" IsEditable="false" />
+
+                <dot:GridViewTemplateColumn AllowSorting="false">
+                    <ContentTemplate>
+                        <%--<dot:Button Text="Uredi" Click="{command: _parent.Edit(_this)}" />
+                        <dot:Button Text="Obriši" Click="{command: _parent.Delete(_this)}" />--%>
+                        <dot:Button Click="{command: _parent.Edit(_this)}" class="action-button" ButtonTagName="button">
+                            <div class="edit-icon"></div>
+                        </dot:Button>
+                        <dot:Button Click="{command: _parent.Delete(_this)}" class="action-button btn-remove" ButtonTagName="button">
+                            <PostBack.Handlers>
+                                <dot:ConfirmPostBackHandler Message="Jeste li sigurni da želite obrisati ovaj semestar?" />
+                            </PostBack.Handlers>
+                            <div class="delete-icon"></div>
+                        </dot:Button>
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <dot:Button Text="Spremi" Click="{command: _parent.SaveEdit(_this)}" class="action-button btn-save" />
+                        <dot:Button Text="Odbaci" Click="{command: _parent.CancelEdit()}" Validation.Enabled="false" class="action-button btn-cancel" />
+                        <%--<dot:Validator ShowErrorMessageText="true" Value="{value: StartDate}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: EndDate}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: IsWinter}" InvalidCssClass="error-text"></dot:Validator>--%>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+                <dot:GridViewTemplateColumn AllowSorting="false">
+                    <ContentTemplate></ContentTemplate>
+                    <EditTemplate>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: StartDate}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: EndDate}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: IsWinter}" InvalidCssClass="error-text"></dot:Validator>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+
+            </Columns>
+            <EmptyDataTemplate>
+                Nema semestara za prikaz.
+            </EmptyDataTemplate>
+        </dot:GridView>
+
+        <table DataContext="{value: NewSemester}" class="page-grid">
+            <tr>
+                <td>Datum početka:</td>
+                <td>Datum završetka:</td>
+                <td>Semestar:</td>
+                <td>Akademska godina: </td>
+            </tr>
+            <tr>
+                <td>
+                    <div Validator.Value="{value: StartDate}"
+                         Validator.InvalidCssClass="has-error"
+                         Validator.SetToolTipText="true"
+                         class="page-input-box">
+                       
+                        <dot:TextBox Text="{value: StartDate}" 
+                                     class="page-input" 
+                                     ValueType="DateTime" 
+                                     Type="Date"
+                                     Changed="{command: _parent.UpdateSemester()}/>
+                    </div>
+                </td>
+                <td>
+                    <div Validator.Value="{value: EndDate}"
+                         Validator.InvalidCssClass="has-error"
+                         Validator.SetToolTipText="true"
+                         class="page-input-box">
+                       
+                        <dot:TextBox Text="{value: EndDate}" class="page-input" ValueType="DateTime" Type="Date" />
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <dot:Literal Text="{value: IsWinter ? "Zimski" : "Ljetni"}" />
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <dot:Literal Text="{value: AcademicYear != null ? AcademicYear : "-"}" />
+                    </div>
+                </td>
+                <td>
+                    <dot:Button Text="Odbaci" Click="{command: _parent.CancelAdd()}" Validation.Enabled="false" class="action-button btn-cancel" />
+                    <dot:Button Text="Spremi" Click="{command: _parent.Save()}" class="action-button btn-save" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: StartDate}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: EndDate}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: IsWinter}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+            </tr>
+        </table>
+
+        <%--<dot:Repeater DataSource="{value: NewSemesters}" WrapperTagName="table">
+            <ItemTemplate>
+                <tr>
+                    <td>
+                        <div Validator.Value="{value: StartDate}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            Datum početka:
+                            <dot:TextBox Text="{value: StartDate}" class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <div Validator.Value="{value: EndDate}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            Datum završetka:
+                            <dot:TextBox Text="{value: EndDate}" class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <div Validator.Value="{value: IsWinter}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            Semestar:
+                            <dot:TextBox Text="{value: IsWinter}"
+                                         class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <div> Akademska godina:
+                            <dot:TextBox Text="{value: AcademicYear}" class="page-input" Enabled="false" />
+                        </div>
+                    </td>
+                    <td>
+                        <dot:Button Text="Remove" Click="{command: _parent.CancelAdd(_this)}" Validation.Enabled="false" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: StartDate}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: EndDate}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: IsWinter}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                </tr>
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <div class="btn-container" >
+            <dot:Button Text="Spremi promjene" Click="{command: Save()}" class="page-button btn-add btn-long" Visible="{value: ShowSaveButton}" />
+        </div>--%>
+    </div>
+
+</dot:Content>
+

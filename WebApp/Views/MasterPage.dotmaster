@@ -1,0 +1,32 @@
+﻿@viewModel WebApp.ViewModels.MasterPageViewModel, WebApp
+@import WebApp.Resources
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Blokic</title>
+    <dot:RequiredResource Name="Styles" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+    <div class="page-top">
+        <span class=page-top-left> <dot:RouteLink Text="Home" RouteName="Default" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Studenti" RouteName="Basics_Students" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Semestri" RouteName="Basics_Semesters" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Predmeti" RouteName="Basics_Courses" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Održavanje predmeta" RouteName="Basics_CourseInstances" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Upisi" RouteName="Enrolments" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Ispiti" RouteName="Exams" class="page-button-text" /></span>
+        <span class=page-top-left> <dot:RouteLink Text="Usmeni ispit" RouteName="OralExam" class="page-button-text" /></span>
+    </div>
+
+    <dot:ContentPlaceHolder ID="MainContent" />
+
+</body>
+</html>

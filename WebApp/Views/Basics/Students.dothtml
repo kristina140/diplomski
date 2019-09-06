@@ -1,0 +1,195 @@
+﻿@viewModel WebApp.ViewModels.Basics.StudentsViewModel, WebApp
+@masterPage Views/MasterPage.dotmaster
+@import WebApp.Resources
+
+
+<dot:Content ContentPlaceHolderID="MainContent">
+
+    <div class="page-center">
+
+        <div class="page-grid-top">
+            <div class="student-image"></div>
+            <h1>Popis studenata</h1>
+
+            <div class="btn-container">
+                <dot:Button Click="{command: AddStudent()}" class="page-button btn-add btn-long" ButtonTagName="button">
+                    <div class="add-icon"></div> <%--Kreiraj--%>
+                </dot:Button>
+            </div>
+
+        </div>
+
+        <dot:Repeater DataSource="{value: ValidationErrors}" class="error-text">
+            <ItemTemplate>
+                {{value: _this}}<br />
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <dot:GridView DataSource="{value: Students}" class="page-grid" InlineEditing="true">
+            <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: Firstname}" HeaderText="Ime" />
+                <dot:GridViewTextColumn ValueBinding="{value: Lastname}" HeaderText="Prezime" />
+                <dot:GridViewTextColumn ValueBinding="{value: Jmbag}" HeaderText="JMBAG" />
+                <dot:GridViewTextColumn ValueBinding="{value: IndexNmb}" HeaderText="Index" />
+
+                <dot:GridViewTemplateColumn AllowSorting="false">
+                    <ContentTemplate>
+                        <dot:Button Click="{command: _parent.Edit(_this)}" class="action-button" ButtonTagName="button">
+                            <div class="edit-icon"></div> <%--Uredi--%>
+                        </dot:Button>
+                        <dot:Button Click="{command: _parent.Delete(_this)}" class="action-button btn-remove" ButtonTagName="button">
+                            <%--Obriši--%>
+                            <PostBack.Handlers>
+                                <dot:ConfirmPostBackHandler Message="Jeste li sigurni da želite obrisati ovog studenta?" />
+                            </PostBack.Handlers>
+                            <div class="delete-icon"></div>
+                        </dot:Button>
+                        <dot:RouteLink RouteName="StudentCard" Param-id="{value: Id}" Text="Kartica studenta"></dot:RouteLink>
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <dot:Button Text="Spremi" Click="{command: _parent.SaveEdit(_this)}" class="action-button btn-save"/>
+                        <dot:Button Text="Odbaci" Click="{command: _parent.CancelEdit()}" Validation.Enabled="false" class="action-button btn-cancel"/>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: Firstname}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: Lastname}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: Jmbag}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: IndexNmb}" InvalidCssClass="error-text"></dot:Validator>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+
+            </Columns>
+            <EmptyDataTemplate>
+                Nema registriranih studenata.
+            </EmptyDataTemplate>
+        </dot:GridView>
+
+        <table DataContext="{value: NewStudent}">
+            <tr>
+                <td>
+                    <div Validator.Value="{value: Firstname}"
+                         Validator.InvalidCssClass="has-error"
+                         Validator.SetToolTipText="true"
+                         class="page-input-box">
+                        Ime:
+                        <dot:TextBox Text="{value: Firstname}" class="page-input" />
+                    </div>
+                </td>
+                <td>
+                    <div Validator.Value="{value: Lastname}"
+                         Validator.InvalidCssClass="has-error"
+                         Validator.SetToolTipText="true"
+                         class="page-input-box">
+                        Prezime:
+                        <dot:TextBox Text="{value: Lastname}" class="page-input" />
+                    </div>
+                </td>
+                <td>
+                    <div Validator.Value="{value: Jmbag}"
+                         Validator.InvalidCssClass="has-error"
+                         Validator.SetToolTipText="true"
+                         class="page-input-box">
+                        JMBAG:
+                        <dot:TextBox Text="{value: Jmbag}"
+                                     class="page-input" />
+                    </div>
+                </td>
+                <td>
+                    <div Validator.Value="{value: IndexNmb}"
+                         Validator.InvalidCssClass="has-error"
+                         Validator.SetToolTipText="true"
+                         class="page-input-box">
+                        Index:
+                        <dot:TextBox Text="{value: IndexNmb}" class="page-input" />
+                    </div>
+                </td>
+                <td>
+                    <dot:Button Text="Odbaci" Click="{command: _parent.CancelAdd()}" Validation.Enabled="false" class="action-button btn-cancel"/>
+                    <dot:Button Text="Spremi" Click="{command: _parent.Save()}" class="action-button btn-save" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: Firstname}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: Lastname}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: Jmbag}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+                <td>
+                    <dot:Validator ShowErrorMessageText="true" Value="{value: IndexNmb}" InvalidCssClass="error-text"></dot:Validator>
+                </td>
+            </tr>
+        </table>
+
+
+        <%--<dot:Repeater DataSource="{value: NewStudents}" WrapperTagName="table">
+            <ItemTemplate>
+                <tr>
+                    <td>
+                        <div Validator.Value="{value: Firstname}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            {{resource: Texts.Label_Firstname}}:
+                            <dot:TextBox Text="{value: Firstname}" class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <div Validator.Value="{value: Lastname}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            {{resource: Texts.Label_Lastname}}:
+                            <dot:TextBox Text="{value: Lastname}" class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <div Validator.Value="{value: Jmbag}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            {{resource: Texts.Label_JMBAG}}:
+                            <dot:TextBox Text="{value: Jmbag}"
+                                         class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <div Validator.Value="{value: IndexNmb}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            {{resource: Texts.Label_IndexNmb}}:
+                            <dot:TextBox Text="{value: IndexNmb}" class="page-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <dot:Button Text="Remove" Click="{command: _parent.CancelAdd(_this)}" Validation.Enabled="false" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: Firstname}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: Lastname}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: Jmbag}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: IndexNmb}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                </tr>
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <div class="btn-container">
+            <dot:Button Text="Save changes" Click="{command: Save()}" class="page-button btn-add btn-long" Visible="{value: ShowSaveButton}" />
+        </div>--%>
+    </div>
+
+</dot:Content>
+
+
+

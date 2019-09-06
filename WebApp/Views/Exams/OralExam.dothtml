@@ -1,0 +1,332 @@
+﻿@viewModel WebApp.ViewModels.Exams.OralExamViewModel, WebApp
+@masterPage Views/MasterPage.dotmaster
+
+<dot:Content ContentPlaceHolderID="MainContent">
+    <div class="page-center">
+        <div class="page-grid-top">
+            <h1 class="title">Usmeni ispit </h1>
+            <span IncludeInPage="{value: (!CourseInstanceExist) ||
+                 (IsExistingExams && !StudentOralExam.ExamId.HasValue) ||
+                 (StudentOralExam.EnrolmentId == 0)}">
+                Potrebno je popuniti formu kako bi krenuli s usmenim ispitom.
+            </span>
+        </div>
+
+        <dot:Repeater DataSource="{value: ValidationErrors}" class="error-text">
+            <ItemTemplate>
+                {{value: _this}}<br />
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <div>
+            <table class="create-table">
+                <tbody>
+                    <tr Visible="{value: _root.CoursesList.Count > 0 && _root.SemestersList.Count > 0 }">
+                        <td>
+                            <dot:Literal Text="Predmet i semestar: " class="title"></dot:Literal>
+                        </td>
+                        <td>
+                            <dot:ComboBox DataSource="{value: _root.CoursesList}"
+                                          SelectedValue="{value: _root.SelectedCourseId}"
+                                          ItemValueBinding="{value: Id}"
+                                          ItemTextBinding="{value: Name}"
+                                          SelectionChanged="{command: _root.CheckCourseInstanceExist()}" />
+                        </td>
+                        <td>
+                            <dot:ComboBox DataSource="{value: _root.SemestersList}"
+                                          SelectedValue="{value: _root.SelectedSemesterId}"
+                                          ItemValueBinding="{value: Id}"
+                                          ItemTextBinding="{value: UserFriendly}"
+                                          SelectionChanged="{command: _root.CheckCourseInstanceExist()}" />
+                        </td>
+                        <td Visible="{value: !CourseInstanceExist}" class="warning-msg">
+                            <dot:Literal Text="Predmet se ne održava u odabranom semestru."></dot:Literal>
+                            <br />
+                            <dot:Literal Text="Ako nastavite, kreirati će se instanca."></dot:Literal>
+                        </td>
+                    </tr>
+                    <tr Visible="{value: _root.CoursesList.Count == 0 || _root.SemestersList.Count == 0}" class="warning-msg">
+                        <td>
+                            <dot:Literal Text="Za kreiranje usmenog ispita potrebno je najprije dodati predmete i semestre."></dot:Literal>
+                            <br />
+                            <dot:RouteLink RouteName="Basics_CourseInstances" Text="Dodaj"></dot:RouteLink>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr />
+
+        <div IncludeInPage="{value: _root.CoursesList.Count > 0 && _root.SemestersList.Count > 0}">
+
+            <table class="create-table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="btn-title-container">
+                                <dot:Button Text="Postojeći ispit"
+                                            Validation.Enabled="false"
+                                            Click="{staticCommand:  _root.IsExistingExams = true}"
+                                            Enabled="{value: !_root.IsExistingExams}"
+                                            class="page-button btn-add btn-long"
+                                            Class-not-active="{value: !_root.IsExistingExams}" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-title-container">
+                                <dot:Button Text="Novi ispit"
+                                            Validation.Enabled="false"
+                                            Click="{staticCommand: _root.IsExistingExams = false}"
+                                            Enabled="{value: _root.IsExistingExams}"
+                                            class="page-button btn-add btn-long"
+                                            Class-not-active="{value: _root.IsExistingExams}" />
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="create-table" Visible="{value: IsExistingExams}">
+                <tbody>
+                    <tr Visible="{value: !AnyExistingExams}">
+                        <td>
+                            <dot:Literal Text="Nema postojećih ispita. Odaberite novi ispit kako bi ga kreirali."></dot:Literal>
+                        </td>
+                    </tr>
+                    <tr Visible="{value: AnyExistingExams}">
+                        <td>
+                            <dot:Literal Text="Postojeći usmeni ispiti: " class="title"></dot:Literal>
+                        </td>
+                        <td>
+                            <dot:ComboBox DataSource="{value: _root.ExamsList}"
+                                          SelectedValue="{value: _root.StudentOralExam.ExamId}"
+                                          ItemValueBinding="{value: Id}"
+                                          ItemTextBinding="{value: UserFriendly}"
+                                          SelectionChanged="{command: _root.CheckExamDate()}" />
+                        </td>
+
+                    </tr>
+                    <tr Visible="{value: AnyExistingExams && _root.ExamDateTimeNotSet}">
+                        <td class="warning-msg">
+                            <dot:Literal Text="Odabrani ispit nema postavljen datum i vrijeme. "></dot:Literal>
+                            <br />
+                            <dot:Literal Text="Sustav će spremiti trenutno vrijeme ili unesite željeno vrijeme."></dot:Literal>
+                        </td>
+                        <td>
+                            <dot:TextBox Text="{value: _root.ExamDate}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Date"
+                                         pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}"
+                                         required />
+                        </td>
+                        <td>
+                            <dot:TextBox Text="{value: _root.ExamTime}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Time"
+                                         pattern="[0-9]{2}:[0-9]{2}" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="create-table" Visible="{value: !IsExistingExams}">
+                <tbody>
+                    <tr>
+                        <td>
+                            <dot:Literal Text="Datum i vrijeme: " class="title"></dot:Literal>
+                        </td>
+                        <td>
+                            <dot:TextBox Text="{value: _root.ExamDate}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Date"
+                                         pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}"
+                                         required />
+                        </td>
+                        <td>
+                            <dot:TextBox Text="{value: _root.ExamTime}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Time"
+                                         pattern="[0-9]{2}:[0-9]{2}" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <hr />
+
+            <table class="create-table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <dot:Literal Text="Student: " class="title"></dot:Literal>
+                        </td>
+                        <td Visible="{value: EnrolmentsList == null || EnrolmentsList.Count == 0}">
+                            <dot:Literal Text="Nema upisanih studenata na odabrani predmet u odabranom semestru"></dot:Literal>
+                        </td>
+                        <td Visible="{value: EnrolmentsList != null && EnrolmentsList.Count > 0}">
+                            <dot:TextBox Text="{value: _root.SearchEnrolment}"
+                                         UpdateTextAfterKeydown="true"
+                                         placeholder="Pretraži..."
+                                         onkeyup="filterEnrolments()"
+                                         class="page-input"
+                                         html:id="enrolmentsSearch" />
+                        </td>
+                        <td Visible="{value: EnrolmentsList != null && EnrolmentsList.Count > 0}">
+                            <nav>
+                                <dot:Repeater DataSource="{value: _root.EnrolmentsList}" WrapperTagName="ul" class="student-list" html:id="enrolmentsSearchList">
+                                    <ItemTemplate>
+                                        <li Events.Click="{staticCommand: _root.StudentOralExam.EnrolmentId = _this.Id}"
+                                            title="Odaberi"
+                                            Class-selected-element="{value: _root.StudentOralExam.EnrolmentId == _this.Id}">
+                                            {{value: _this.Student.UserFriendly}}
+                                        </li>
+                                    </ItemTemplate>
+                                </dot:Repeater>
+                            </nav>
+                        </td>
+                        <td>
+                            <div class="btn-title-container">
+                                <dot:Button Text="Upiši studenta"
+                                            Validation.Enabled="false"
+                                            Click="{command:  _root.NewStudent()}"
+                                            class="page-button btn-add btn-long" />
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <hr IncludeInPage="{value: AddNewStudent}" />
+            <table class="create-table" IncludeInPage="{value: AddNewStudent}">
+                <tr>
+                    <td>
+                        <dot:Literal Text="Odabir studenta: " class="title"></dot:Literal>
+                    </td>
+                    <td>
+                        <dot:TextBox Text="{value: _root.SearchStudent}"
+                                     UpdateTextAfterKeydown="true"
+                                     placeholder="Pretraži..."
+                                     onkeyup="filterStudents()"
+                                     class="page-input"
+                                     html:id="studentsSearch" />
+                    </td>
+                    <td>
+                        <nav>
+                            <dot:Repeater DataSource="{value: _root.StudentsList}" WrapperTagName="ul" class="student-list" html:id="studentsSearchList">
+                                <ItemTemplate>
+                                    <li Events.Click="{staticCommand: _root.SelectedStudent = _this}"
+                                        title="Odaberi"
+                                        Class-selected-element="{value: _root.SelectedStudent.Id == _this.Id}">
+                                        {{value: _this.UserFriendly}}
+                                    </li>
+                                </ItemTemplate>
+                            </dot:Repeater>
+                        </nav>
+                    </td>
+                    <td>
+                        <div class="btn-container">
+                            <dot:Button Text="Odustani" Click="{command: _root.CancelAddStudent()}" class="action-button btn-cancel"
+                                        Validation.Enabled="false" />
+                        </div>
+                    </td>
+                </tr>
+                <tr Visible="{value: _root.SelectedStudent != null}">
+                    <td>
+                        <dot:Literal Text="Odabrani student: " class="title"></dot:Literal>
+                    </td>
+                    <td>
+                        <dot:Literal Text="{value: _root.SelectedStudent.UserFriendly}"></dot:Literal>
+                    </td>
+                    <td>
+                        <div class="btn-container">
+                            <dot:Button Text="Spremi" Click="{command: _root.AddStudent()}" class="action-button btn-save" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: NewEnrolment.StudentId}" InvalidCssClass="error-text"></dot:Validator>
+                    </td>
+                </tr>
+
+            </table>
+
+            <div class="btn-title-container" IncludeInPage="{value: CourseInstanceExist &&
+                 ( (IsExistingExams && StudentOralExam.ExamId.HasValue) || (!IsExistingExams)) &&
+                 StudentOralExam.EnrolmentId != 0 }">
+                <dot:Button Text="Počni s usmenim"
+                            Click="{command: _root.StartExam()}"
+                            class="page-button btn-save btn-long" />
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- confirmation dialog popup -->
+    <div class="modal fade" tabindex="-1" role="dialog" data-id="confirm">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title title"><%--<span class="glyphicon glyphicon-user"></span>--%> Postojeći ispit</h4>
+                </div>
+                <div class="modal-body">
+                    <dot:Literal Text="{value: "Student "}"></dot:Literal>
+                    <dot:Literal Text="{value: _root.ExistingStudentOralExam.Student }" class="title"></dot:Literal>
+                    <br />
+                    <dot:Literal Text="{value: " je već prijavljen na ispit "}"></dot:Literal>
+                    <dot:Literal Text="{value: _root.ExistingStudentOralExam.Exam}" class="title"></dot:Literal>
+                    <br />
+                    <br />
+                    <dot:Literal Text="Želite li nastaviti? (uređivanje postojećih podataka studentskog ispita)"></dot:Literal>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-title-container">
+                        <dot:Button Text="Nastavi s usmenim" Click="{command: _root.ContinueOnExam(_root.ExistingStudentOralExam.Id)}" class="page-button btn-save btn-long" />
+                        <button type="button" class="close" style="padding: 10px 5px;" data-dismiss="modal" aria-label="Close">Odustani</button>
+                    </div>
+                    <%--<dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: SaveUser()}">
+                            <span class="glyphicon glyphicon-floppy-disk"></span> Save Changes
+                        </dot:Button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dot:InlineScript>
+        function filterEnrolments() {
+            filterList("enrolmentsSearch", "enrolmentsSearchList");
+        }
+
+        function filterStudents() {
+            filterList("studentsSearch", "studentsSearchList");
+        }
+
+        function filterList(inputId, listId) {
+            var input, filter, ul, li, i, txtValue;
+            input = document.getElementById(inputId);
+            filter = input.value.toUpperCase();
+            ul = document.getElementById(listId);
+            li = ul.getElementsByTagName("li");
+
+            for (i = 0; i < li.length; i++) {
+                txtValue = li[i].textContent || li[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+    </dot:InlineScript>
+
+</dot:Content>
+

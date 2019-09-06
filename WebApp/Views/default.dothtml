@@ -1,0 +1,10 @@
+﻿@viewModel WebApp.ViewModels.DefaultViewModel, WebApp
+@masterPage Views/MasterPage.dotmaster
+@import WebApp.Resources
+<dot:Content ContentPlaceHolderID="MainContent">
+
+    
+    <div class="page-center">
+        <p class="home-page-title title"><strong>BLOKIĆ</strong></p>
+    </div>
+</dot:Content>

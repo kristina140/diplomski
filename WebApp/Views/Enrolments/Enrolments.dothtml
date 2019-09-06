@@ -1,0 +1,200 @@
+﻿@viewModel WebApp.ViewModels.Enrolments.EnrolmentsViewModel, WebApp
+@masterPage Views/MasterPage.dotmaster
+
+<dot:Content ContentPlaceHolderID="MainContent">
+
+    <div class="page-center">
+
+        <div class="page-grid-top">
+            <h1>Enrolments</h1>
+
+            <div class="btn-container">
+                <dot:Button Text="Dodaj nove" Click="{command: StartAdd()}" class="page-button btn-add btn-long"></dot:Button>
+            </div>
+
+        </div>
+        <dot:Repeater DataSource="{value: ValidationErrors}" class="error-text">
+            <ItemTemplate>
+                {{value: _this}}<br />
+            </ItemTemplate>
+        </dot:Repeater>
+
+        <dot:Button Text="{value: _root.Toggle ? "Zatvori" : "Proširi"}"
+                    Click="{staticCommand: _root.Toggle = !_root.Toggle}"
+                    Validation.Enabled="false"
+                    class="action-button btn-add" />
+
+        <dot:GridView DataSource="{value: Enrolments}" class="page-grid" InlineEditing="true">
+            <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: Course.Name}" HeaderText="Predmet" IsEditable="false" />
+                <dot:GridViewTextColumn ValueBinding="{value: Semester.UserFriendly}" HeaderText="Semestar i akademska godina" IsEditable="false" />
+
+                <dot:GridViewTemplateColumn IsEditable="false" HeaderText="Student">
+                    <dot:Literal Text="{value: Student.Firstname + " " + Student.Lastname}"></dot:Literal>
+                    <br Visible="{value: _root.Toggle}" />
+                    <dot:Literal Text="{value: "JMBAG: " +  Student.Jmbag}" Visible="{value: _root.Toggle}" />
+                    <br Visible="{value: _root.Toggle}" />
+                    <dot:Literal Text="{value: "Index: " + Student.IndexNmb}" Visible="{value: _root.Toggle}" />
+                </dot:GridViewTemplateColumn>
+
+                <dot:GridViewTemplateColumn HeaderText="Ocjena">
+                    <ContentTemplate>
+                        <dot:Literal Text="{value: GradeDescription}" />
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <div Validator.Value="{value: Enrolment.FinalGrade}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             <%--class="page-input-box"--%>>
+                            <dot:ComboBox DataSource="{value: _root.GradesList}"
+                                          SelectedValue="{value: Enrolment.FinalGrade}"
+                                          ItemValueBinding="{value: Grade}"
+                                          ItemTextBinding="{value: Description}" />
+                        </div>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+                <dot:GridViewTemplateColumn HeaderText="Datum ocjene">
+                    <ContentTemplate>
+                        <dot:Literal Text="{value: Enrolment.GradeDate}" FormatString="dd.MM.yyyy" />
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <div Validator.Value="{value: Enrolment.GradeDate}"
+                             Validator.InvalidCssClass="has-error"
+                             Validator.SetToolTipText="true"
+                             class="page-input-box">
+                            <dot:TextBox Text="{value: Enrolment.GradeDate}"
+                                         class="page-input"
+                                         ValueType="DateTime"
+                                         Type="Date"
+                                         pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}" />
+                        </div>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+
+                <dot:GridViewTemplateColumn AllowSorting="false">
+                    <ContentTemplate>
+                        <dot:Button Click="{command: _parent.Edit(_this.Enrolment)}" class="action-button" ButtonTagName="button">
+                            <div class="edit-icon"></div>
+                        </dot:Button>
+                        <dot:Button Click="{command: _parent.Delete(_this.Enrolment)}" class="action-button btn-remove" ButtonTagName="button">
+                            <PostBack.Handlers>
+                                <dot:ConfirmPostBackHandler Message="Jeste li sigurni da želite obrisati ovaj enrolment?" />
+                            </PostBack.Handlers>
+                            <div class="delete-icon"></div>
+                        </dot:Button>
+                    </ContentTemplate>
+                    <EditTemplate>
+                        <dot:Button Text="Spremi" Click="{command: _parent.SaveEdit(_this.Enrolment)}" class="action-button btn-save" />
+                        <dot:Button Text="Odbaci" Click="{command: _parent.CancelEdit()}" Validation.Enabled="false" class="action-button btn-cancel" />
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+                <dot:GridViewTemplateColumn AllowSorting="false">
+                    <ContentTemplate></ContentTemplate>
+                    <EditTemplate>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: _this.Enrolment.FinalGrade}" InvalidCssClass="error-text"></dot:Validator>
+                        <dot:Validator ShowErrorMessageText="true" Value="{value: _this.Enrolment.GradeDate}" InvalidCssClass="error-text"></dot:Validator>
+                    </EditTemplate>
+                </dot:GridViewTemplateColumn>
+
+            </Columns>
+            <EmptyDataTemplate>
+                Nema enrolmenta za prikaz.
+            </EmptyDataTemplate>
+        </dot:GridView>
+
+        <div Visible="{value: CreateMode}">
+            <table class="create-table">
+                <tr>
+                    <td>
+                        <cc:MultiSelect DataSource="{value: StudentsList}"
+                                        SelectedValues="{value: SelectedStudents}"
+                                        ItemTextBinding="{value: UserFriendly}"
+                                        ItemValueBinding="{value: Id}"
+                                        Size="10" />
+                    </td>
+                    <td>
+                        Dodaj na:
+                    </td>
+                    <td>
+                        <cc:MultiSelect DataSource="{value: CourseInstancesList}"
+                                        SelectedValues="{value: SelectedCourseInstances}"
+                                        ItemTextBinding="{value: UserFriendly}"
+                                        ItemValueBinding="{value: Value}"
+                                        Size="10" />
+                    </td>
+                    <td>
+                        <div class="btn-container">
+                            <dot:Button Text="Dodaj" Click="{command: Add()}" class="page-button btn-add btn-long"
+                                        title="Odaberi studente i instance predmeta"
+                                        Enabled="{value: _root.SelectedStudents != null && _root.SelectedCourseInstances != null }" />
+                            <dot:Button Text="Odustani" Click="{command: CancelAdd()}" class="page-button btn-add btn-long"
+                                        title="Odbaci sve novo dodane" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <br />
+            <dot:Literal Text="Pending:" class="h3" Visible="{value: NewEnrolments.Count > 0}"></dot:Literal>
+
+            <dot:GridView DataSource="{value: NewEnrolments}" class="page-grid">
+                <Columns>
+                    <dot:GridViewTextColumn ValueBinding="{value: Student.UserFriendly}" HeaderText="Student" IsEditable="false" />
+                    <dot:GridViewTextColumn ValueBinding="{value: Course.Name}" HeaderText="Predmet" IsEditable="false" />
+                    <dot:GridViewTextColumn ValueBinding="{value: Semester.UserFriendly}" HeaderText="Semestar" IsEditable="false" />
+                    <dot:GridViewTemplateColumn HeaderText="Ocjena" IsEditable="false">
+                        <ContentTemplate>
+                            <div Validator.Value="{value: Enrolment.FinalGrade}"
+                                 Validator.InvalidCssClass="has-error"
+                                 Validator.SetToolTipText="true"
+                                 <%--class="page-input-box"--%>>
+                                <dot:ComboBox DataSource="{value: _root.GradesList}"
+                                              SelectedValue="{value: Enrolment.FinalGrade}"
+                                              ItemValueBinding="{value: Grade}"
+                                              ItemTextBinding="{value: Description}" />
+                            </div>
+                        </ContentTemplate>
+                    </dot:GridViewTemplateColumn>
+                    <dot:GridViewTemplateColumn HeaderText="Datum ocjene" IsEditable="false">
+                        <ContentTemplate>
+                            <div Validator.Value="{value: Enrolment.GradeDate}"
+                                 Validator.InvalidCssClass="has-error"
+                                 Validator.SetToolTipText="true"
+                                 class="page-input-box">
+                                <dot:TextBox Text="{value: Enrolment.GradeDate}"
+                                             class="page-input"
+                                             ValueType="DateTime"
+                                             Type="Date"
+                                             pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}" />
+                            </div>
+                        </ContentTemplate>
+                    </dot:GridViewTemplateColumn>
+
+                    <dot:GridViewTemplateColumn AllowSorting="false" IsEditable="false">
+                        <ContentTemplate>
+                            <dot:Button Text="Odbaci" Click="{command: _parent.Remove(_this)}" Validation.Enabled="false" class="action-button btn-cancel" />
+                        </ContentTemplate>
+                    </dot:GridViewTemplateColumn>
+                    <dot:GridViewTemplateColumn AllowSorting="false" IsEditable="false">
+                        <ContentTemplate>
+                            <dot:Validator ShowErrorMessageText="true" Value="{value: _this.Enrolment.FinalGrade}" InvalidCssClass="error-text"></dot:Validator>
+                            <dot:Validator ShowErrorMessageText="true" Value="{value: _this.Enrolment.GradeDate}" InvalidCssClass="error-text"></dot:Validator>
+                        </ContentTemplate>
+                    </dot:GridViewTemplateColumn>
+
+                </Columns>
+            </dot:GridView>
+
+            <div class="btn-container" Visible="{value: NewEnrolments.Count > 0}">
+                <dot:Button Text="Spremi i osvježi" class="page-button btn-add btn-long"
+                            Click="{command: _root.ForceSave()}"
+                            title="Postojeći će se osvježiti, novi će se kreirati."></dot:Button>
+                <dot:Button Text="Spremi novo" class="page-button btn-add btn-long"
+                            Click="{command: _root.SafeSave()}"
+                            title="Postojeći će se zanemariti, novi će se kreirati."></dot:Button>
+            </div>
+        </div>
+    </div>
+
+</dot:Content>
+
