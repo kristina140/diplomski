@@ -6,7 +6,7 @@
     <div class="page-center">
 
         <div class="page-grid-top">
-            <h1>Enrolments</h1>
+            <h1 class="title">Upisi</h1>
 
             <div class="btn-container">
                 <dot:Button Text="Dodaj nove" Click="{command: StartAdd()}" class="page-button btn-add btn-long"></dot:Button>

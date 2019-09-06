@@ -6,7 +6,7 @@
     <div class="page-center">
 
         <div class="page-grid-top">
-            <h1>Kreiranje enrolmenta</h1>
+            <h1 class="title">Kreiranje upisa</h1>
         </div>
         <dot:Repeater DataSource="{value: ValidationErrors}" class="error-text">
             <ItemTemplate>

@@ -6,8 +6,7 @@
     <div class="page-center">
 
         <div class="page-grid-top">
-            <%--<div class="semester-image"></div>--%>
-            <h1>Popis predmeta</h1>
+            <h1 class="title">Popis predmeta</h1>
 
             <div class="btn-container">
                 <dot:Button Text="Dodaj predmet" Click="{command: Add()}" class="page-button btn-add btn-long" />

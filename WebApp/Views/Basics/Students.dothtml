@@ -9,7 +9,7 @@
 
         <div class="page-grid-top">
             <div class="student-image"></div>
-            <h1>Popis studenata</h1>
+            <h1 class="title">Popis studenata</h1>
 
             <div class="btn-container">
                 <dot:Button Click="{command: AddStudent()}" class="page-button btn-add btn-long" ButtonTagName="button">

@@ -10,8 +10,8 @@
     <div class="page-center">
 
         <div class="page-grid-top">
-            <div class="semester-image"></div>
-            <h1>Semestri</h1>
+            <%--<div class="semester-image"></div>--%>
+            <h1 class="title">Semestri</h1>
 
             <div class="btn-container">
                 <dot:Button Text="Dodaj semestar" Click="{command: AddSemester()}" class="page-button btn-add btn-long" />
@@ -40,8 +40,7 @@
                                          ValueType="DateTime"
                                          Type="Date"
                                          pattern="[0-9]{2}.[0-9]{2}.[0-9]{4}"
-                                         Changed="{command: _parent.UpdateSemester(_this)}"
-                                         <%--Changed="{staticCommand: _this = _utility.GetSemesterUpdates(_this)}"--%> />
+                                         Changed="{command: _parent.UpdateSemester(_this)}"/>
                         </div>
                     </EditTemplate>
                 </dot:GridViewTemplateColumn>

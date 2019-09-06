@@ -63,6 +63,7 @@ namespace WebApp.ViewModels.Exams
 
         public string CurrentStudentExams { get; set; }
         public bool ShowCurrentStudentExams { get; set; } = false;
+        public bool IsOralExam { get; set; } = false;
 
         [Bind(Direction.ServerToClient)]
         public List<CourseList> CoursesList { get; set; }
@@ -338,6 +339,7 @@ namespace WebApp.ViewModels.Exams
                 string.Format($"Studenti prijavljeni na ispit : {exam.ExamTypeDescription} {date} {exam.Course.Name} :") :
                 string.Format($"Trenutno nema studenata prijavljenih na ispit : {exam.ExamTypeDescription} {date} {exam.Course.Name}");
 
+            IsOralExam = exam.Type == ExamType.Oral;
             ShowCurrentStudentExams = true;
 
             CancelAddStudentsToExam();
