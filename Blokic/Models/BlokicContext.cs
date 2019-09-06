@@ -23,14 +23,13 @@ namespace Blokic.Models
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<StudentExam> StudentExam { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Blokic;Trusted_Connection=True;");
-            }
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Blokic;Trusted_Connection=True;");
+        //    }
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -85,13 +84,6 @@ namespace Blokic.Models
                     .HasConstraintName("FK_Exam_CourseInstance");
             });
 
-            modelBuilder.Entity<Semester>(entity =>
-            {
-                entity.Property(e => e.AcademicYear)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-            });
-
             modelBuilder.Entity<Student>(entity =>
             {
                 entity.Property(e => e.Firstname).IsRequired();
@@ -110,6 +102,10 @@ namespace Blokic.Models
             modelBuilder.Entity<StudentExam>(entity =>
             {
                 entity.HasKey(e => new { e.EnrolmentId, e.ExamId });
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("IX_StudentExam")
+                    .IsUnique();
 
                 entity.HasOne(d => d.Enrolment)
                     .WithMany(p => p.StudentExam)

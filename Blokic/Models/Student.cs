@@ -20,23 +20,23 @@ namespace Blokic.Models
 
         public virtual ICollection<Enrolment> Enrolment { get; set; }
 
-        public IEnumerable<string> Validate()
+        public IDictionary<string, string> Validate()
         {
-            var errors = new List<string>();
+            var errors = new Dictionary<string, string>();
 
             if (string.IsNullOrEmpty(Jmbag) || Jmbag.Length != 10 || !Jmbag.All(_ => char.IsDigit(_)))
             {
-                errors.Add("Invalid JMBAG.");
+                errors.Add(nameof(Jmbag),"Invalid JMBAG.");
             }
 
             if (string.IsNullOrWhiteSpace(Firstname))
             {
-                errors.Add("Firstname is required.");
+                errors.Add(nameof(Firstname), "Firstname is required.");
             }
 
             if (string.IsNullOrWhiteSpace(Lastname))
             {
-                errors.Add("Lastname is required.");
+                errors.Add(nameof(Lastname), "Lastname is required.");
             }
 
             return errors;

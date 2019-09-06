@@ -14,5 +14,17 @@ namespace Blokic.Models
         public string Name { get; set; }
 
         public virtual ICollection<CourseInstance> CourseInstance { get; set; }
+
+        public IDictionary<string, string> Validate()
+        {
+            var errors = new Dictionary<string, string>();
+
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                errors.Add(nameof(Name), "Course name is required.");
+            }
+
+            return errors;
+        }
     }
 }
