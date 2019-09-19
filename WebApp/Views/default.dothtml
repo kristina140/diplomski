@@ -1,6 +1,6 @@
 ﻿@viewModel WebApp.ViewModels.DefaultViewModel, WebApp
 @masterPage Views/MasterPage.dotmaster
-@import WebApp.Resources
+
 <dot:Content ContentPlaceHolderID="MainContent">
 
     

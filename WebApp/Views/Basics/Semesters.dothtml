@@ -1,6 +1,5 @@
 ﻿@viewModel WebApp.ViewModels.Basics.SemestersViewModel, WebApp
 @masterPage Views/MasterPage.dotmaster
-@import WebApp.Resources
 @import WebApp.Services
 @service _utility = WebApp.Services.UtilityService
 
