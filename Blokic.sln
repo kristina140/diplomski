@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29311.281
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blokic", "Blokic\Blokic.csproj", "{25F0397D-897B-4F1E-B006-CF2A8E618838}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{A9202B43-50B7-4788-9A76-4AEB03EAC8DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreApp", "CoreApp\CoreApp.csproj", "{EF99A1AD-ACC0-46F8-AF39-75D123A56B7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreApp", "CoreApp\CoreApp.csproj", "{EF99A1AD-ACC0-46F8-AF39-75D123A56B7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopApp", "DesktopApp\DesktopApp.csproj", "{59DC023D-1B97-478E-8BAA-B4EBAEE24F41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{EF99A1AD-ACC0-46F8-AF39-75D123A56B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF99A1AD-ACC0-46F8-AF39-75D123A56B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF99A1AD-ACC0-46F8-AF39-75D123A56B7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59DC023D-1B97-478E-8BAA-B4EBAEE24F41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59DC023D-1B97-478E-8BAA-B4EBAEE24F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59DC023D-1B97-478E-8BAA-B4EBAEE24F41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59DC023D-1B97-478E-8BAA-B4EBAEE24F41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

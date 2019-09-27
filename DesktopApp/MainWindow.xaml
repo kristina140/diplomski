@@ -1,0 +1,46 @@
+﻿<Window x:Class="DesktopApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopApp"
+        mc:Ignorable="d"
+        Title="Blokić" Height="450" Width="800" >
+
+    <Window.Background>
+        <ImageBrush ImageSource="background.png"  />
+    </Window.Background>
+
+    <Grid Margin="10,0,10,10">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Menu DockPanel.Dock="Top" Height="30">
+            <MenuItem Header="Home" Style="{StaticResource menuStyle}" Click="NavigateHome_Click"></MenuItem>
+            <MenuItem Header="_Nastava" Style="{StaticResource menuStyle}">
+                <MenuItem Header="Predmeti" Click="NavigateCourses_Click"></MenuItem>
+                <MenuItem Header="Semestri" Click="NavigateSemesters_Click"></MenuItem>
+                <MenuItem Header="Usmeni2" Click="NavigateOralExamUpdate_Click"></MenuItem>
+                <Separator />
+                <MenuItem Header="Održavanje predmeta" Click="NavigateCourseInstances_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Studenti" Style="{StaticResource menuStyle}">
+                <MenuItem Header="Studenti" Click="NavigateStudents_Click"></MenuItem>
+                <MenuItem Header="Studentska kartica" Click="NavigateStudentCard_Click"></MenuItem>
+                <MenuItem Header="Upisi" Click="NavigateEnrolments_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Ispiti" Style="{StaticResource menuStyle}" Click="NavigateExams_Click"></MenuItem>
+            <MenuItem Header="Usmeni ispit" Click="NavigateOralExam_Click" Style="{StaticResource menuStyle}"></MenuItem>
+        </Menu>
+
+        <Frame x:Name="MainContent" Grid.Row="1" Source="Home.xaml"></Frame>
+
+    </Grid>
+
+</Window>

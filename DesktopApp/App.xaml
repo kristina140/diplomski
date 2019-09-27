@@ -1,0 +1,201 @@
+﻿<Application x:Class="DesktopApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DesktopApp">
+    <Application.Resources>
+
+        <Style x:Key="mainTitleStyle">
+            <Setter Property="Label.VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Label.HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Label.FontSize" Value="48"></Setter>
+            <Setter Property="Label.Foreground" Value="#3176bb"></Setter>
+        </Style>
+
+        <Style x:Key="menuStyle">
+            <Setter Property="Label.VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="Label.HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontWeight" Value="Medium"></Setter>
+            <Setter Property="Label.FontSize" Value="18"></Setter>
+            <Setter Property="Label.Foreground" Value="#3176bb"></Setter>
+        </Style>
+
+        <Style x:Key="titleStyle">
+            <Setter Property="Label.VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="Label.HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Label.FontSize" Value="22"></Setter>
+            <Setter Property="Label.Foreground" Value="#3176bb"></Setter>
+        </Style>
+
+        <Style x:Key="subtitleStyle">
+            <Setter Property="Label.VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="Label.HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Label.FontSize" Value="18"></Setter>
+            <Setter Property="Label.Foreground" Value="#3176bb"></Setter>
+        </Style>
+
+        <Style x:Key="subsubtitleStyle">
+            <Setter Property="Label.VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="Label.HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Label.FontSize" Value="16"></Setter>
+            <Setter Property="Label.Foreground" Value="#3176bb"></Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="pageButtonStyle">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="MinHeight" Value="30"></Setter>
+            <Setter Property="MinWidth" Value="100"></Setter>
+            <Setter Property="Margin" Value="10, 2, 10, 2"></Setter>
+            <Setter Property="Background" Value="#3176bb"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontSize" Value="18"></Setter>
+            <Setter Property="Label.Foreground" Value="White"></Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="greenpageButtonStyle">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="MinHeight" Value="30"></Setter>
+            <Setter Property="MinWidth" Value="100"></Setter>
+            <Setter Property="Margin" Value="10, 2, 10, 2"></Setter>
+            <Setter Property="Background" Value="Green"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontSize" Value="18"></Setter>
+            <Setter Property="Label.Foreground" Value="White"></Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="inactivepageButtonStyle">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="MinHeight" Value="30"></Setter>
+            <Setter Property="MinWidth" Value="100"></Setter>
+            <Setter Property="Margin" Value="10, 2, 10, 2"></Setter>
+            <Setter Property="Background" Value="Gray"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontSize" Value="18"></Setter>
+            <Setter Property="Label.Foreground" Value="White"></Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="actionButtonStyle">
+            <Setter Property="MinHeight" Value="20"></Setter>
+            <Setter Property="MinWidth" Value="30"></Setter>
+            <Setter Property="MaxHeight" Value="25"></Setter>
+            <Setter Property="Margin" Value="2, 2, 2, 2"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontSize" Value="14"></Setter>
+            <Setter Property="Label.Foreground" Value="White"></Setter>
+
+            <Setter Property="Background" Value="#3176bb"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#004890"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource actionButtonStyle}" x:Key="saveButtonStyle">
+            <Setter Property="Background" Value="#60ba4e"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#54a145"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource actionButtonStyle}" x:Key="cancelButtonStyle">
+            <Setter Property="Background" Value="#f2ad52"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#e8a041"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource actionButtonStyle}" x:Key="removeButtonStyle">
+            <Setter Property="Background" Value="#e84c41"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#ba2c22"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader" x:Key="tableHeaderStyle">
+            <Setter Property="Background" Value="#3176bb"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontSize" Value="15"></Setter>
+            <Setter Property="Label.Foreground" Value="White"></Setter>
+            <Setter Property="Padding" Value="10,5,10,5"></Setter>
+        </Style>
+
+        <Style TargetType="DataGridRow" x:Key="tableRowStyle">
+            <Setter Property="FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="MinHeight" Value="20"></Setter>
+        </Style>
+
+        <Style TargetType="DataGridCell" x:Key="tableCellStyle">
+            <Style.Triggers>
+                <Trigger Property="DataGridCell.IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="Black"></Setter>
+                    <Setter Property="BorderThickness" Value="0"></Setter>
+                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    <Setter Property="FontFamily" Value="Trebuchet MS"></Setter>
+                    <Setter Property="FontSize" Value="15"></Setter>
+                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    <Setter Property="Margin" Value="10,0,0,0"></Setter>
+                </Trigger>
+                <Trigger Property="DataGridCell.IsSelected" Value="False">
+                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    <Setter Property="BorderThickness" Value="0"></Setter>
+                    <Setter Property="FontFamily" Value="Trebuchet MS"></Setter>
+                    <Setter Property="FontSize" Value="15"></Setter>
+                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    <Setter Property="Margin" Value="10,0,0,0"></Setter>
+                </Trigger>
+                <Trigger Property="DataGridRow.IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="0, 1, 0, 1"></Setter>
+                    <Setter Property="BorderBrush" Value="#3176bb"></Setter>
+                </Trigger>
+            </Style.Triggers>
+            <!--<Setter Property="Padding" Value="10,0,0,0"></Setter>
+            <Setter Property="OverridesDefaultStyle" Value="True"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            
+            <Setter Property="TextBlock.HorizontalAlignment" Value="Center"></Setter>-->
+        </Style>
+
+        <Style TargetType="DataGrid" x:Key="tableStyle">
+            <Setter Property="VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="Height" Value="auto"></Setter>
+            <Setter Property="Width" Value="auto"></Setter>
+            <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="AlternatingRowBackground" Value="#e0dede"></Setter>
+            <Setter Property="AlternationCount" Value="2"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="GridLinesVisibility" Value="None"></Setter>
+            <Setter Property="CanUserResizeRows" Value="True"></Setter>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"></Setter>
+            <Setter Property="MaxHeight" Value="400"></Setter>
+
+            <Setter Property="ColumnHeaderStyle" Value="{StaticResource tableHeaderStyle}"></Setter>
+
+            <!--<Setter Property="RowStyle" Value="{StaticResource tableRowStyle}"></Setter>-->
+
+            <Setter Property="CellStyle" Value="{StaticResource tableCellStyle}"></Setter>
+        </Style>
+
+    </Application.Resources>
+</Application>

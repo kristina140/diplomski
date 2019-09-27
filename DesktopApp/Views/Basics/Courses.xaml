@@ -1,0 +1,232 @@
+﻿<Page x:Class="DesktopApp.Views.Basics.Courses"
+      x:Name="coursePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DesktopApp.Views.Basics"
+      xmlns:utility="clr-namespace:DesktopApp.Utility"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Predmeti">
+
+    <Page.Resources>
+        <utility:BoolToStringConverter x:Key="CIsWinter" FalseValue="Ljetni" TrueValue="Zimski" />
+        <utility:BoolToStringConverter x:Key="CIsClosed" FalseValue="Proširi" TrueValue="Zatvori" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <utility:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <utility:ValueConverterGroup x:Key="InverseBooleanToVisibilityConverter">
+            <utility:InverseBooleanConverter/>
+            <BooleanToVisibilityConverter/>
+        </utility:ValueConverterGroup>
+    </Page.Resources>
+
+    <Page.Background>
+        <ImageBrush ImageSource="..\..\background.png"  />
+    </Page.Background>
+
+    <ScrollViewer>
+        <Grid>
+            <Grid Margin="60,40,60,10" x:Name="spinnerGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Popis predmeta" Grid.Row="0" Grid.Column="0" Style="{StaticResource titleStyle}"></Label>
+
+                <utility:Spinner Style="{StaticResource BusyAnimationStyle}" Grid.Row="1" Grid.Column="1"/>
+
+            </Grid>
+            <Grid Margin="60,40,60,10" DataContext="{Binding .}" x:Name="rootGrid" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Popis predmeta" Grid.Row="0" Grid.Column="0" Style="{StaticResource titleStyle}"></Label>
+               
+                
+                <Button Content="Dodaj predmet" Grid.Column="2" Style="{StaticResource pageButtonStyle}"  
+                Command="{Binding DataContext.StartAddCommand, ElementName=rootGrid}" />
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="3" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <DataTemplate x:Key="InstancesTemplate" >
+                            <StackPanel>
+                                <ListView ItemsSource="{Binding DataContext.Instances, RelativeSource={RelativeSource AncestorType=DataGridRow}}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Semestar"  DisplayMemberBinding="{Binding IsWinter, Converter={StaticResource CIsWinter}}" />
+                                            <GridViewColumn Header="Akademska godina" DisplayMemberBinding="{Binding AcademicYear}" />
+                                            <GridViewColumn Header="Datum početka"  DisplayMemberBinding="{Binding StartDate, StringFormat='dd.MM.yyyy'}" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="InstancesTemplate2" >
+                            <StackPanel Visibility="{Binding DataContext.ToggleDetails, ElementName=rootGrid, NotifyOnSourceUpdated=True, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ListView ItemsSource="{Binding DataContext.Instances, RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                  Background="Transparent" BorderThickness="0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Margin="10, 1, 1, 1" Text="{Binding IsWinter, Converter={StaticResource CIsWinter}}"></TextBlock>
+                                                <TextBlock Margin="10, 1, 1, 1" Text="{Binding AcademicYear}"></TextBlock>
+                                                <TextBlock Margin="10, 1, 1, 1" Text="{Binding StartDate, StringFormat='dd.MM.yyyy'}"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </StackPanel>
+                        </DataTemplate>
+                    </Grid.Resources>
+
+                    <Button Content="Detalji" Grid.Column="0"  Grid.Row="0" 
+                            Style="{StaticResource actionButtonStyle}"  
+                        Height="10" Width="50"
+                        Command="{Binding DataContext.ToggleDetailsCommand, ElementName=rootGrid}" />
+
+                    <DataGrid Grid.Row="1" Grid.Column="1"
+                        x:Name="CoursesTable" ItemsSource="{Binding Path=ItemsObservable}" 
+                      SelectedItem="{Binding Path=SelectedItem}" SelectedIndex="{Binding Path=SelectedItemIndex}"
+                      SelectionMode="Single" 
+                  AutoGenerateColumns="False" Style="{StaticResource tableStyle}"
+                  CanUserAddRows="False" CanUserDeleteRows="False" >
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource tableCellStyle}">
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource tableHeaderStyle}">
+                                <Setter Property="Label.HorizontalContentAlignment" Value="Left" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Naziv">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Path=Name, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" 
+                                         BorderThickness="0" Background="Transparent"
+                                         IsReadOnly="{Binding InEditMode, Converter={StaticResource InverseBooleanConverter}}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Instance" MinWidth="30" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                            <TextBlock Text="{Binding Path=Instances.Count}" Width="30"
+                                                       Visibility="{Binding DataContext.ToggleDetails, ElementName=rootGrid, NotifyOnSourceUpdated=True, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+
+                                            <StackPanel HorizontalAlignment="Center"
+                                                Visibility="{Binding DataContext.ToggleDetails, ElementName=rootGrid, NotifyOnSourceUpdated=True, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <ListView ItemsSource="{Binding DataContext.Instances, RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                  Background="Transparent" BorderThickness="0">
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Margin="10, 1, 1, 1" Text="{Binding IsWinter, Converter={StaticResource CIsWinter}}"></TextBlock>
+                                                                <TextBlock Margin="10, 1, 1, 1" Text="{Binding AcademicYear}"></TextBlock>
+                                                                <TextBlock Margin="10, 1, 1, 1" Text="{Binding StartDate, StringFormat='dd.MM.yyyy'}"></TextBlock>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!--<DataGridTextColumn Header="Broj instanci" Binding="{Binding Path=Instances.Count}" IsReadOnly="True"/>
+                            <DataGridTemplateColumn Header="Instance" 
+                                                    CellTemplate="{StaticResource InstancesTemplate2}"
+                                                    Visibility="{Binding DataContext.ToggleDetails, ElementName=rootGrid, NotifyOnSourceUpdated=True, Converter={StaticResource BooleanToVisibilityConverter}}"></DataGridTemplateColumn>-->
+                            
+                            <DataGridTemplateColumn >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Command="{Binding DataContext.EditItemCommand, ElementName=rootGrid}" 
+                                                    Style="{StaticResource actionButtonStyle}"
+                                        Content="Uredi"  Visibility="{Binding InEditMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                            <Button Command="{Binding DataContext.SaveEditCommand, ElementName=rootGrid}" 
+                                                    Style="{StaticResource saveButtonStyle}"
+                                        Content="Spremi" Visibility="{Binding InEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <Button Command="{Binding DataContext.DiscardEditCommand, ElementName=rootGrid}" 
+                                                    Style="{StaticResource cancelButtonStyle}"
+                                        Content="Odbaci" Visibility="{Binding InEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        </StackPanel>
+
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <utility:ConfirmationButton Content="Obriši" Command="{Binding DataContext.DeleteItemCommand, ElementName=rootGrid}"
+                                                                    Style="{StaticResource removeButtonStyle}"
+                                                            Question="Jeste li sigurni da želite obrisati odabrani predmet?"
+                                                            Caption="Brisanje predmeta"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <Label x:Name="NoCoursesMssg" Content="Trenutno nema predmeta za prikaz" HorizontalAlignment="Left" 
+               Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CoursesTable}"
+               Margin="50,45,0,0" Grid.Row="1" VerticalAlignment="Top" Width="207" Grid.ColumnSpan="2"/>
+
+                <ContentControl Grid.Row="2" Grid.ColumnSpan="3" 
+                        Visibility="{Binding InAddMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        MinHeight="60">
+                    <StackPanel Orientation="Vertical" Background="#e0dede" HorizontalAlignment="Center">
+                        <Label Content="Naziv: " Margin="5,0,10,0" Grid.Column="0" 
+                       FontFamily="Trebuchet MS" FontSize="12"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <TextBox Text="{Binding Path=NewItem.Name}" Grid.Column="1"
+                            Margin="10,0,0,0" Height="20" Width="150"></TextBox>
+
+                            <Button Command="{Binding DataContext.SaveAddCommand, ElementName=rootGrid}" 
+                                Content="Spremi" Grid.Row="0" HorizontalAlignment="Right"
+                                Height="20" MinWidth="50" Style="{StaticResource saveButtonStyle}"
+                                Margin="5,0,5,0" />
+                            <Button Command="{Binding DataContext.DiscardAddCommand, ElementName=rootGrid}" 
+                            Content="Odbaci" Grid.Row="0" HorizontalAlignment="Right"
+                            Height="20" MinWidth="50" Style="{StaticResource cancelButtonStyle}"
+                            Margin="5,0,5,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ContentControl>
+
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+
+    
+</Page>

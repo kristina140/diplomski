@@ -1,0 +1,207 @@
+﻿<Page x:Class="DesktopApp.Views.Basics.Students"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DesktopApp.Views.Basics"
+      xmlns:utility="clr-namespace:DesktopApp.Utility"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Studenti">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <utility:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <utility:ValueConverterGroup x:Key="InverseBooleanToVisibilityConverter">
+            <utility:InverseBooleanConverter/>
+            <BooleanToVisibilityConverter/>
+        </utility:ValueConverterGroup>
+    </Page.Resources>
+    
+    <Page.Background>
+        <ImageBrush ImageSource="..\..\background.png"  />
+    </Page.Background>
+
+    <ScrollViewer>
+        <Grid>
+            <Grid Margin="60,40,60,10" x:Name="spinnerGrid" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Popis studenata" Grid.Row="0" Grid.Column="0" Style="{StaticResource titleStyle}"></Label>
+
+                <utility:Spinner Style="{StaticResource BusyAnimationStyle}" Grid.Row="1" Grid.Column="1"/>
+
+            </Grid>
+            <Grid Margin="60,40,60,10" DataContext="{Binding .}" x:Name="rootGrid" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Popis studenata" Grid.Row="0" Grid.Column="0" Style="{StaticResource titleStyle}"></Label>
+                <Button Content="Dodaj studenta" Grid.Column="2" Style="{StaticResource pageButtonStyle}"  
+                Command="{Binding DataContext.StartAddCommand, ElementName=rootGrid}" />
+
+                <ListView ItemsSource="{Binding ValidationErrors, NotifyOnSourceUpdated=True}" 
+                          Grid.Row="0" Grid.Column="1"
+                          Background="Transparent" Foreground="Red" BorderThickness="0">
+                    
+                </ListView>
+                
+                <Grid Grid.Row="1" Grid.ColumnSpan="3" >
+                    <DataGrid x:Name="StudentsTable" ItemsSource="{Binding Path=ItemsObservable}" 
+                      SelectedItem="{Binding Path=SelectedItem}" SelectedIndex="{Binding Path=SelectedItemIndex}"
+                      SelectionMode="Single"
+                  AutoGenerateColumns="False" Style="{StaticResource tableStyle}"
+                  CanUserAddRows="False" CanUserDeleteRows="False" >
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource tableCellStyle}">
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource tableHeaderStyle}">
+                                <Setter Property="Label.HorizontalContentAlignment" Value="Left" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Ime">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Path=Student.Firstname, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" 
+                                         BorderThickness="0" Background="Transparent"
+                                         IsReadOnly="{Binding InEditMode, Converter={StaticResource InverseBooleanConverter}}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Prezime">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Path=Student.Lastname, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" 
+                                         BorderThickness="0" Background="Transparent"
+                                         IsReadOnly="{Binding InEditMode, Converter={StaticResource InverseBooleanConverter}}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="JMBAG">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Path=Student.Jmbag, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" 
+                                         BorderThickness="0" Background="Transparent"
+                                         IsReadOnly="{Binding InEditMode, Converter={StaticResource InverseBooleanConverter}}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Index">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Path=Student.IndexNmb, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" 
+                                         BorderThickness="0" Background="Transparent"
+                                         IsReadOnly="{Binding InEditMode, Converter={StaticResource InverseBooleanConverter}}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Command="{Binding DataContext.EditItemCommand, ElementName=rootGrid}" 
+                                                    Style="{StaticResource actionButtonStyle}"
+                                        Content="Uredi"  Visibility="{Binding InEditMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                            <Button Command="{Binding DataContext.SaveEditCommand, ElementName=rootGrid}" 
+                                                    Style="{StaticResource saveButtonStyle}"
+                                        Content="Spremi" Visibility="{Binding InEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <Button Command="{Binding DataContext.DiscardEditCommand, ElementName=rootGrid}" 
+                                                    Style="{StaticResource cancelButtonStyle}"
+                                        Content="Odbaci" Visibility="{Binding InEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                      
+                                        </StackPanel>
+
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <utility:ConfirmationButton Content="Obriši" Command="{Binding DataContext.DeleteItemCommand, ElementName=rootGrid}"
+                                                                    Style="{StaticResource removeButtonStyle}"
+                                                            Question="Jeste li sigurni da želite obrisati odabranog studenta?"
+                                                            Caption="Brisanje studenta"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <Label Content="Trenutno nema studenata za prikaz" HorizontalAlignment="Left" 
+               Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=StudentsTable}"
+               Margin="50,45,0,0" Grid.Row="1" VerticalAlignment="Top" Width="207" Grid.ColumnSpan="2"/>
+
+                <ContentControl Grid.Row="2" Grid.ColumnSpan="3" 
+                        Visibility="{Binding InAddMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        MinHeight="60">
+                    <StackPanel Orientation="Horizontal" Background="#e0dede" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" >
+                            <Label Content="Ime: " Margin="5,0,10,0" Grid.Column="0" 
+                       FontFamily="Trebuchet MS" FontSize="12"/>
+                            <TextBox Text="{Binding Path=NewItem.Firstname}" Grid.Column="1"
+                            Margin="10,0,0,0" Height="20" Width="120"></TextBox>
+                            
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="Prezime: " Margin="5,0,10,0" Grid.Column="0" 
+                       FontFamily="Trebuchet MS" FontSize="12"/>
+                            <TextBox Text="{Binding Path=NewItem.Lastname}" Grid.Column="1"
+                            Margin="10,0,0,0" Height="20" Width="120"></TextBox>
+                            
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="JMBAG: " Margin="5,0,10,0" Grid.Column="0" 
+                       FontFamily="Trebuchet MS" FontSize="12"/>
+                            <TextBox Text="{Binding Path=NewItem.Jmbag}" Grid.Column="1"
+                            Margin="10,0,0,0" Height="20" Width="120"></TextBox>
+                           
+                            
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="Index: " Margin="5,0,10,0" Grid.Column="0" 
+                       FontFamily="Trebuchet MS" FontSize="12"/>
+                            <TextBox Text="{Binding Path=NewItem.IndexNmb}" Grid.Column="1"
+                            Margin="10,0,0,0" Height="20" Width="120"></TextBox>
+
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                           
+                            <Button Command="{Binding DataContext.SaveAddCommand, ElementName=rootGrid}" 
+                            Content="Spremi" Grid.Row="0" HorizontalAlignment="Right"
+                            Height="20" MinWidth="50" Style="{StaticResource saveButtonStyle}"
+                            Margin="5,0,5,0"/>
+                            <Button Command="{Binding DataContext.DiscardAddCommand, ElementName=rootGrid}" 
+                            Content="Odbaci" Grid.Row="0" HorizontalAlignment="Right"
+                            Height="20" MinWidth="50" Style="{StaticResource cancelButtonStyle}"
+                            Margin="5,0,5,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ContentControl>
+
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>

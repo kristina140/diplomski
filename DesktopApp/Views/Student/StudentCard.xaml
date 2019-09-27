@@ -1,0 +1,161 @@
+﻿<Page x:Class="DesktopApp.Views.Student.StudentCard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DesktopApp.Views.Student"
+      xmlns:utility="clr-namespace:DesktopApp.Utility"
+       xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Studentska kartica">
+
+    <Page.Resources>
+        <utility:BoolToStringConverter x:Key="CParticipated" FalseValue="Nije pristupio" TrueValue="Pristupio" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <utility:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <utility:ValueConverterGroup x:Key="InverseBooleanToVisibilityConverter">
+            <utility:InverseBooleanConverter/>
+            <BooleanToVisibilityConverter/>
+        </utility:ValueConverterGroup>
+    </Page.Resources>
+
+    <Page.Background>
+        <ImageBrush ImageSource="..\..\background.png"  />
+    </Page.Background>
+
+    <ScrollViewer>
+        <Grid>
+            <Grid Margin="60,40,60,10" x:Name="spinnerGrid" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Studentska kartica" Grid.Row="0" Grid.Column="0" Style="{StaticResource titleStyle}"></Label>
+
+                <utility:Spinner Style="{StaticResource BusyAnimationStyle}" Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
+
+            </Grid>
+            <Grid Margin="60,40,60,10" DataContext="{Binding .}" x:Name="rootGrid" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Studentska kartica" Grid.Row="0" Grid.Column="0" Style="{StaticResource titleStyle}"></Label>
+
+                <StackPanel Grid.Row="1"  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ComboBox ItemsSource="{Binding Students}"
+                         SelectedItem="{Binding SelectedStudent}"
+                         DisplayMemberPath="UserFriendly"></ComboBox>
+
+                    <Button Content="Dohvati" Grid.Column="2" Style="{StaticResource pageButtonStyle}"  
+                Command="{Binding DataContext.GetStudentCard, ElementName=rootGrid}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Orientation="Vertical"
+                            Visibility="{Binding ShowCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Label Content="Osnovni podaci : " Style="{StaticResource subtitleStyle}" ></Label>
+
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <Label Content="Index" Foreground="Gray"></Label>
+                            <TextBlock Text="{Binding StudentCard.Student.IndexNmb, NotifyOnSourceUpdated=True, Mode=OneWay}"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <Label Content="JMBAG" Foreground="Gray"></Label>
+                            <TextBlock Text="{Binding StudentCard.Student.Jmbag, NotifyOnSourceUpdated=True, Mode=OneWay}"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <Label Content="Ime" Foreground="Gray"></Label>
+                            <TextBlock Text="{Binding StudentCard.Student.Firstname, NotifyOnSourceUpdated=True, Mode=OneWay}"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <Label Content="Prezime" Foreground="Gray"></Label>
+                            <TextBlock Text="{Binding StudentCard.Student.Lastname, NotifyOnSourceUpdated=True, Mode=OneWay}"></TextBlock>
+                        </StackPanel>
+
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Visibility="{Binding ShowCard, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="3" Orientation="Vertical"
+                            Margin="0, 10, 0, 0" HorizontalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding StudentCard.CourseEnrolments, NotifyOnSourceUpdated=True, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding Course.Name, NotifyOnSourceUpdated=True, Mode=OneWay}" Style="{StaticResource subtitleStyle}"
+                                           Grid.Row="0" HorizontalAlignment="Left" Padding="0,20,0,0"></TextBlock>
+
+                                    <ItemsControl ItemsSource="{Binding Enrolments, NotifyOnSourceUpdated=True, Mode=OneWay}" Grid.Row="1">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{Binding Semester.UserFriendly, NotifyOnSourceUpdated=True, Mode=OneWay}" 
+                                                               Style="{StaticResource subsubtitleStyle}" Grid.Row="0" HorizontalAlignment="Left"
+                                                               Padding="0,10,0,0">
+                                                        
+                                                    </TextBlock>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
+                                                        <TextBlock Text="Konačna ocjena i datum: " Foreground="Gray" Padding="0,0,10,0"></TextBlock>
+                                                        <TextBlock Text="{Binding FinalGrade, NotifyOnSourceUpdated=True, Mode=OneWay}" Padding="0,0,10,0"></TextBlock>
+                                                        <TextBlock Text="{Binding FinalGradeDate, StringFormat=dd.MM.yyyy, NotifyOnSourceUpdated=True, Mode=OneWay}" Padding="0,0,10,0"></TextBlock>
+                                                    </StackPanel>
+
+                                                    <DataGrid ItemsSource="{Binding StudentExams, NotifyOnSourceUpdated=True, Mode=OneWay}"
+                                                      CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" Grid.Row="2" AutoGenerateColumns="False"
+                                                              Style="{StaticResource tableStyle}">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Datum ispita"  IsReadOnly="True"
+                                                                    Binding="{Binding ExamDate, StringFormat=dd.MM.yyyy, Mode=OneWay}"/>
+                                                            <DataGridTextColumn Header="Tip ispita"  IsReadOnly="True"
+                                                                    Binding="{Binding ExamType,  Mode=OneWay}"/>
+                                                            <DataGridTextColumn Header="Pristupio"  IsReadOnly="True"
+                                                                    Binding="{Binding Participated, Converter={StaticResource CParticipated}, Mode=OneWay}"/>
+                                                            <DataGridTextColumn Header="Bodovi"  IsReadOnly="True"
+                                                                    Binding="{Binding Score, Mode=OneWay}"/>
+                                                            <DataGridTextColumn Header="Ocjena"  IsReadOnly="True"
+                                                                    Binding="{Binding Grade, Mode=OneWay}"/>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>
