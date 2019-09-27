@@ -3,9 +3,10 @@
     height: 100%;
     margin: 0;
     background-image: url(background/notebook-notepad-pencil-574283.png);
-    background-position: center; 
-    background-repeat: no-repeat; 
+    background-position: center;
+    background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 .home-page-title {
