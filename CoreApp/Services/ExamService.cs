@@ -153,7 +153,7 @@ namespace CoreApp.Services
                 }).ToListAsync();
         }       
 
-        public async Task Update(int examId, ExamUpdate model)
+        public async Task<ExamUpdate> Update(int examId, ExamUpdate model)
         {
             var exam = await context.Exam.FirstOrDefaultAsync(_ => _.Id == examId);
             if (exam == null)
@@ -166,6 +166,13 @@ namespace CoreApp.Services
                 throw new ValidationPropertyException(errors);
 
             await context.SaveChangesAsync();
+
+            return new ExamUpdate
+            {
+                Id = exam.Id,
+                Date = exam.Date,
+                Time = exam.Date
+            };
         }
 
         //public async Task Create (ExamCreate model)

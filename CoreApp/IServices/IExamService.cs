@@ -12,7 +12,7 @@ namespace CoreApp.IServices
         Task<bool> HasDate(int examId);
         Task<List<ExamList>> GetOralExamsListForCourseInstance(int courseId, int semesterId);
         Task<List<ExamUpdateList>> GetUpdateable();
-        Task Update(int examId, ExamUpdate model);
+        Task<ExamUpdate> Update(int examId, ExamUpdate model);
         Task Create(ExamCreate model);
         Task Delete(int examId);
         Task ForceDelete(int examId);

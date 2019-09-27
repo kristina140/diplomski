@@ -14,6 +14,12 @@ namespace CoreApp.BusinessModels
 
     public class OralExamCreate
     {
+        public OralExamCreate()
+        {
+            Exam = new OralExamCreateExam();
+            ExistingExamDateTime = new OralExamDateTime();
+        }
+
         [Required(ErrorMessage = "Predmet je obavezan!")]
         public int CourseId { get; set; }
         [Required(ErrorMessage = "Semestar je obavezan!")]

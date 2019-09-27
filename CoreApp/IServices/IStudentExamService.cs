@@ -14,6 +14,7 @@ namespace CoreApp.IServices
         Task<List<StudentExamList>> GetStudentExamList(int studentId, Guid studentExamId, int courseId);
         Task<List<StudentExamUpdateList>> GetStudentExamsForExam(int examId);
         Task<StudentExamsExport> GetStudentExamsExport(int courseId, int semesterId);
+        StudentExamsExport GetStudentExamsExportSync(int courseId, int semesterId);
         Task Create(List<StudentExamCreate> models);
         Task Create(StudentExamsCreate model);
         Task UpdateOralExam(OralExamUpdate model);

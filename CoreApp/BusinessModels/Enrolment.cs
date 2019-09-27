@@ -25,6 +25,12 @@ namespace CoreApp.BusinessModels
 
     public class StudentCardEnrolment
     {
+        public StudentCardEnrolment()
+        {
+            Semester = new SemesterList();
+            StudentExams = new List<StudentExamBase>();
+        }
+
         public string FinalGrade { get; set; }
         public DateTime? FinalGradeDate { get; set; }
         public SemesterList Semester { get; set; }

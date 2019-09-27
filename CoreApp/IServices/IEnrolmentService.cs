@@ -13,6 +13,7 @@ namespace CoreApp.IServices
         Task<List<EnrolmentList>> GetForCourseInstance(CourseInstanceBase courseInstance);
         Task<List<EnrolmentList>> GetAvailableForCourseInstance(CourseInstanceBase courseInstance, int examId);
         Task<List<EnrolmentUpdateList>> GetUpdateable();
+        Task<EnrolmentUpdateList> GetUpdateable(int enrolmentId);
         Task<EnrolmentUpdate> Create(EnrolmentCreate model);
         Task<EnrolmentUpdate> CreateBase(EnrolmentBaseCreate model);
         Task<List<EnrolmentUpdate>> CreateSafe(List<EnrolmentCreate> models);

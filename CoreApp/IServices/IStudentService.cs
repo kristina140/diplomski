@@ -13,6 +13,7 @@ namespace CoreApp.IServices
         Task<List<StudentUpdate>> GetUpdateable();
         Task<StudentBase> GetById(int studentId);
         Task<StudentCard> GetStudentCard(int studentId);
+        StudentCard GetStudentCardSync(int studentId);
         Task<StudentUpdate> Create(StudentCreate model);
         Task<List<StudentUpdate>> Create(List<StudentCreate> models);
         Task<StudentUpdate> UpdateBasic(int studentId, StudentUpdate model);

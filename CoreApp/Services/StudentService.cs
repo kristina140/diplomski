@@ -125,6 +125,65 @@ namespace CoreApp.Services
             };
         }
 
+        public StudentCard GetStudentCardSync(int studentId)
+        {
+            var student = context.Student.FirstOrDefault(_ => _.Id == studentId);
+            if (student == null)
+                throw new ValidationException("Nepostojeći student!");
+
+            var studentCardCourseEnrolments = context.StudentExam
+                .Include(_ => _.Enrolment)
+                .Include(_ => _.Exam)
+                .ThenInclude(_ => _.CourseInstance)
+                .ThenInclude(_ => _.Semester)
+                .Include(_ => _.Exam)
+                .ThenInclude(_ => _.CourseInstance)
+                .ThenInclude(_ => _.Course)
+                .Where(_ => _.Enrolment.StudentId == studentId)
+                .GroupBy(_ => _.Exam.CourseId, (courseId, studExams) => new StudentCardCourseEnrolment
+                {
+                    Course = new CourseList
+                    {
+                        Id = courseId,
+                        Name = studExams.FirstOrDefault().Exam.CourseInstance.Course.Name
+                    },
+                    Enrolments = studExams.GroupBy(_ => _.Exam.SemesterId, (semesterId, studentExams) => new StudentCardEnrolment
+                    {
+                        Semester = new SemesterList
+                        {
+                            Id = semesterId,
+                            IsWinter = studentExams.FirstOrDefault().Exam.CourseInstance.Semester.IsWinter,
+                            StartDate = studentExams.FirstOrDefault().Exam.CourseInstance.Semester.StartDate
+                        },
+                        FinalGrade = studentExams.FirstOrDefault().Enrolment.FinalGrade.ConvertToGrade().GetEnumDescription(),
+                        FinalGradeDate = studentExams.FirstOrDefault().Enrolment.GradeDate,
+                        StudentExams = studentExams.Select(_ => new StudentExamBase
+                        {
+                            Description = _.Description,
+                            Grade = _.Grade.ConvertToGrade().GetEnumDescription(),
+                            Participated = _.Participated,
+                            Score = _.Score,
+
+                            ExamDate = _.Exam.Date,
+                            ExamType = _.Exam.Type.ConvertToExamType().GetEnumDescription()
+                        }).OrderBy(_ => _.ExamDate).ToList()
+                    }).OrderBy(_ => _.Semester.StartDate).ToList()
+                }).ToList();
+
+            return new StudentCard
+            {
+                Student = new StudentBase
+                {
+                    Id = student.Id,
+                    Firstname = student.Firstname,
+                    Lastname = student.Lastname,
+                    IndexNmb = student.IndexNmb,
+                    Jmbag = student.Jmbag
+                },
+                CourseEnrolments = studentCardCourseEnrolments
+            };
+        }
+
         public async Task<StudentUpdate> Create(StudentCreate model)
         {
             var student = new Student

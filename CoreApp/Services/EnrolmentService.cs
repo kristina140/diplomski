@@ -70,6 +70,9 @@ namespace CoreApp.Services
 
         public async Task<List<EnrolmentList>> GetForCourseInstance(CourseInstanceBase courseInstance)
         {
+            if (courseInstance == null)
+                return null;
+
             return await GetForCourseInstance(courseInstance.CourseId, courseInstance.SemesterId);
         }
 
@@ -133,6 +136,53 @@ namespace CoreApp.Services
                         GradeDate = _.GradeDate
                     }
                 }).ToListAsync();
+        }
+
+        public async Task<EnrolmentUpdateList> GetUpdateable(int enrolmentId)
+        {
+            var enrolment = await context.Enrolment
+                 .Include(_ => _.CourseInstance).ThenInclude(_ => _.Course)
+                .Include(_ => _.CourseInstance).ThenInclude(_ => _.Semester)
+                .Include(_ => _.Student)
+                .FirstOrDefaultAsync(_ => _.Id == enrolmentId);
+
+            return enrolment != null ?
+                new EnrolmentUpdateList
+                {
+                    Id = enrolment.Id,
+                    Course = new CourseBase
+                    {
+                        Id = enrolment.CourseInstance.Course.Id,
+                        Name = enrolment.CourseInstance.Course.Name
+                    },
+                    Semester = new SemesterBase
+                    {
+                        Id = enrolment.CourseInstance.Semester.Id,
+                        IsWinter = enrolment.CourseInstance.Semester.IsWinter,
+                        StartDate = enrolment.CourseInstance.Semester.StartDate,
+                        EndDate = enrolment.CourseInstance.Semester.EndDate
+                    },
+                    Student = new StudentBase
+                    {
+                        Id = enrolment.Student.Id,
+                        Firstname = enrolment.Student.Firstname,
+                        Lastname = enrolment.Student.Lastname,
+                        IndexNmb = enrolment.Student.IndexNmb,
+                        Jmbag = enrolment.Student.Jmbag
+                    },
+                    Enrolment = new EnrolmentUpdate
+                    {
+                        Id = enrolment.Id,
+                        CourseInstance = new CourseInstanceBase
+                        {
+                            SemesterId = enrolment.SemesterId,
+                            CourseId = enrolment.SemesterId
+                        },
+                        StudentId = enrolment.StudentId,
+                        FinalGrade = enrolment.FinalGrade.ConvertToGrade(),
+                        GradeDate = enrolment.GradeDate
+                    }
+                } : null;
         }
 
         public async Task<EnrolmentUpdate> Create(EnrolmentCreate model)

@@ -29,6 +29,7 @@ namespace CoreApp.BusinessModels
         public CourseUpdateModel()
         {
             Instances = new List<SemesterList>();
+            Course = new CourseUpdate();
         }
 
         public int Id { get; set; }

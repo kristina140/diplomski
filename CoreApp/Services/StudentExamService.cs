@@ -237,6 +237,73 @@ namespace CoreApp.Services
             };
         }
 
+        public StudentExamsExport GetStudentExamsExportSync(int courseId, int semesterId)
+        {
+            var courseInstance = context.CourseInstance
+                .Include(_ => _.Course)
+                .Include(_ => _.Semester)
+                .FirstOrDefault(_ => _.CourseId == courseId && _.SemesterId == semesterId);
+
+            if (courseInstance == null)
+                return null;
+
+            var exams = context.Exam
+                .Include(_ => _.CourseInstance)
+                .ThenInclude(_ => _.Semester)
+                .Where(_ => _.CourseId == courseId && _.SemesterId == semesterId)
+                .Select(_ => new ExamExport
+                {
+                    ExamId = _.Id,
+                    ExamDate = _.Date,
+                    ExamType = _.Type.ConvertToExamType(),
+                    Semestar = new SemesterList
+                    {
+                        Id = _.CourseInstance.Semester.Id,
+                        IsWinter = _.CourseInstance.Semester.IsWinter,
+                        StartDate = _.CourseInstance.Semester.StartDate
+                    }
+                }).ToList();
+
+            var students = context.Enrolment
+                .Include(_ => _.Student)
+                .Where(_ => _.CourseId == courseId && _.SemesterId == semesterId)
+                .Select(_ => new EnrolmentExport
+                {
+                    FinalGrade = _.FinalGrade,
+                    FinalGradeDate = _.GradeDate,
+                    Student = new StudentBase
+                    {
+                        Id = _.Student.Id,
+                        Firstname = _.Student.Firstname,
+                        IndexNmb = _.Student.IndexNmb,
+                        Jmbag = _.Student.Jmbag,
+                        Lastname = _.Student.Lastname
+                    }
+                }).ToList();
+
+            var studentExams = context.StudentExam
+                .Include(_ => _.Enrolment)
+                .Where(_ => _.Enrolment.CourseId == courseId && _.Enrolment.SemesterId == semesterId)
+                .Select(_ => new StudentExamExport
+                {
+                    ExamId = _.ExamId,
+                    Grade = _.Grade,
+                    Participated = _.Participated,
+                    Score = _.Score,
+                    StudentExamId = _.Id,
+                    StudentId = _.Enrolment.StudentId
+                }).ToList();
+
+            return new StudentExamsExport
+            {
+                Exams = exams,
+                Students = students,
+                StudentExams = studentExams.ToDictionary(_ => new Tuple<int, int>(_.ExamId, _.StudentId), _ => _),
+                Course = courseInstance.Course.Name,
+                Semester = Helpers.GetUserFriendlySemester(courseInstance.Semester.StartDate, courseInstance.Semester.IsWinter)
+            };
+        }
+
         public async Task Create(List<StudentExamCreate> models)
         {
             var studentExams = models.Select(_ => new StudentExam

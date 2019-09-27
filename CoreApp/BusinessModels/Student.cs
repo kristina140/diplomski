@@ -41,7 +41,7 @@ namespace CoreApp.BusinessModels
         {
             if (string.IsNullOrEmpty(Jmbag) || Jmbag.Length != 10 || !Jmbag.All(_ => char.IsDigit(_)))
             {
-                yield return new ValidationResult("JMBAG must consist of 10 digits!", new[] { "Jmbag" });
+                yield return new ValidationResult("JMBAG se mora sastojati od 10 znamenki", new[] { "Jmbag" });
 
             }
         }
@@ -54,6 +54,12 @@ namespace CoreApp.BusinessModels
 
     public class StudentCard
     {
+        public StudentCard()
+        {
+            Student = new StudentBase();
+            CourseEnrolments = new List<StudentCardCourseEnrolment>();
+        }
+
         public StudentBase Student { get; set; }
 
         public List<StudentCardCourseEnrolment> CourseEnrolments { get; set; }
@@ -61,6 +67,12 @@ namespace CoreApp.BusinessModels
 
     public class StudentCardCourseEnrolment
     {
+        public StudentCardCourseEnrolment()
+        {
+            Course = new CourseList();
+            Enrolments = new List<StudentCardEnrolment>();
+        }
+
         public CourseList Course { get; set; }
         public List<StudentCardEnrolment> Enrolments { get; set; }
     }
